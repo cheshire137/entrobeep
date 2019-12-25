@@ -16,7 +16,7 @@ import (
 
 func main() {
 	bits := 16
-	rate := 8000 // 8 kHz
+	rate := 4000 // 4 kHz
 	channels := 1
 
 	out, err := os.Create("test.wav")
@@ -33,7 +33,7 @@ func main() {
 	buf := &audio.IntBuffer{
 		Format: &audio.Format{NumChannels: channels, SampleRate: rate},
 	}
-	for i := 0; i < 700; i++ {
+	for i := 0; i < 10000; i++ {
 		input := sampleInput(inputs)
 		transformer := sampleTransformer(transformers)
 		originalValue := input.Get()
@@ -42,7 +42,7 @@ func main() {
 		for _, value := range transformedValues {
 			buf.Data = append(buf.Data, value)
 		}
-		time.Sleep(10 * time.Millisecond)
+		time.Sleep(1 * time.Millisecond)
 	}
 	if err := e.Write(buf); err != nil {
 		log.Fatal(err)
