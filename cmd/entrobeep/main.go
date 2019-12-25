@@ -3,12 +3,15 @@ package main
 import (
 	"fmt"
 	"log"
+	"math/rand"
 	"os"
 	"time"
 
 	"github.com/go-audio/audio"
 	"github.com/go-audio/wav"
-	"github.com/go-vgo/robotgo"
+
+	"github.com/cheshire137/entrobeep/pkg/input"
+	"github.com/cheshire137/entrobeep/pkg/transform"
 )
 
 func main() {
@@ -22,17 +25,22 @@ func main() {
 	}
 	defer out.Close()
 
+	transformers := transform.GetTransformers()
+	inputs := input.GetInputs()
+
 	e := wav.NewEncoder(out, rate, bits, channels, 1)
 
 	buf := &audio.IntBuffer{
 		Format: &audio.Format{NumChannels: channels, SampleRate: rate},
 	}
 	for i := 0; i < 700; i++ {
-		x, y := robotgo.GetMousePos()
-		fmt.Printf("%d, %d\n", x, y)
-		buf.Data = append(buf.Data, x)
-		buf.Data = append(buf.Data, y)
-		time.Sleep(40 * time.Millisecond)
+		input := sampleInput(inputs)
+		transformer := sampleTransformer(transformers)
+		originalValue := input.Get()
+		transformedValue := transformer.Transform(originalValue)
+		fmt.Printf("%d => %d\n", originalValue, transformedValue)
+		buf.Data = append(buf.Data, transformedValue)
+		time.Sleep(10 * time.Millisecond)
 	}
 	if err := e.Write(buf); err != nil {
 		log.Fatal(err)
@@ -40,4 +48,14 @@ func main() {
 	if err := e.Close(); err != nil {
 		log.Fatal(err)
 	}
+}
+
+func sampleInput(inputs []input.Input) input.Input {
+	index := rand.Intn(len(inputs))
+	return inputs[index]
+}
+
+func sampleTransformer(transformers []transform.Transformer) transform.Transformer {
+	index := rand.Intn(len(transformers))
+	return transformers[index]
 }
