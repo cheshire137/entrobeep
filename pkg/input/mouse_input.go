@@ -15,7 +15,7 @@ func (i *MouseInput) Get() int {
 	x, y := robotgo.GetMousePos()
 	randomNum := rand.Intn(2)
 	if randomNum < 1 {
-		return x
+		return x * 10000
 	}
-	return y
+	return y * 10000
 }
