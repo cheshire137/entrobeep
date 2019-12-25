@@ -7,5 +7,6 @@ type Input interface {
 func GetInputs() []Input {
 	return []Input{
 		&MouseInput{},
+		&DisplayInput{},
 	}
 }
