@@ -1,7 +1,7 @@
 package transform
 
 type Transformer interface {
-	Transform(input int) int
+	Transform(input int) []int
 }
 
 func GetTransformers() []Transformer {

@@ -37,9 +37,11 @@ func main() {
 		input := sampleInput(inputs)
 		transformer := sampleTransformer(transformers)
 		originalValue := input.Get()
-		transformedValue := transformer.Transform(originalValue)
-		fmt.Printf("%d => %d\n", originalValue, transformedValue)
-		buf.Data = append(buf.Data, transformedValue)
+		transformedValues := transformer.Transform(originalValue)
+		fmt.Printf("%d => %v\n", originalValue, transformedValues)
+		for _, value := range transformedValues {
+			buf.Data = append(buf.Data, value)
+		}
 		time.Sleep(10 * time.Millisecond)
 	}
 	if err := e.Write(buf); err != nil {
