@@ -9,5 +9,6 @@ func GetTransformers() []Transformer {
 		&NullTransformer{},
 		&LengthenTransformer{},
 		&MagnifyTransformer{},
+		&IncrementTransformer{},
 	}
 }
