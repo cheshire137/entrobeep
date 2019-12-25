@@ -11,6 +11,7 @@ import (
 	"github.com/go-audio/wav"
 
 	"github.com/cheshire137/entrobeep/pkg/input"
+	"github.com/cheshire137/entrobeep/pkg/processor"
 	"github.com/cheshire137/entrobeep/pkg/transform"
 )
 
@@ -27,12 +28,14 @@ func main() {
 
 	transformers := transform.GetTransformers()
 	inputs := input.GetInputs()
+	processors := processor.GetProcessors()
 
 	e := wav.NewEncoder(out, rate, bits, channels, 1)
 
 	buf := &audio.IntBuffer{
 		Format: &audio.Format{NumChannels: channels, SampleRate: rate},
 	}
+
 	for i := 0; i < 10000; i++ {
 		input := sampleInput(inputs)
 		transformer := sampleTransformer(transformers)
@@ -42,8 +45,15 @@ func main() {
 		for _, value := range transformedValues {
 			buf.Data = append(buf.Data, value)
 		}
-		time.Sleep(1 * time.Millisecond)
+		time.Sleep(100 * time.Microsecond)
 	}
+
+	for i, value := range buf.Data {
+		processor := sampleProcessor(processors)
+		buf.Data[i] = processor.Process(value)
+		fmt.Printf("%d => %d\n", value, buf.Data[i])
+	}
+
 	if err := e.Write(buf); err != nil {
 		log.Fatal(err)
 	}
@@ -60,4 +70,9 @@ func sampleInput(inputs []input.Input) input.Input {
 func sampleTransformer(transformers []transform.Transformer) transform.Transformer {
 	index := rand.Intn(len(transformers))
 	return transformers[index]
+}
+
+func sampleProcessor(processors []processor.Processor) processor.Processor {
+	index := rand.Intn(len(processors))
+	return processors[index]
 }
