@@ -7,5 +7,6 @@ type Transformer interface {
 func GetTransformers() []Transformer {
 	return []Transformer{
 		&NullTransformer{},
+		&LengthenTransformer{},
 	}
 }
